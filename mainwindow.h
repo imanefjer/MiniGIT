@@ -38,27 +38,12 @@ private slots:
     void on_selectAll_clicked();
     void on_filesList_itemClicked(QListWidgetItem *item);
     void logUserAction(const QString &action);
-
     void on_revert_clicked();
-
     void on_addedFiles_itemClicked(QListWidgetItem *item);
-
     void on_pushButton_2_clicked();
-
-
     void on_deleteButton_pressed();
 
 
-    void on_pushButton_clicked();
-
-    void on_commitButton_pressed();
-
-
-    void on_versionsList_itemClicked(QListWidgetItem *item);
-
-    void on_versionsList_itemSelectionChanged();
-
-    void on_versionsList_itemPressed(QListWidgetItem *item);
 
 private:
 
@@ -72,8 +57,6 @@ private:
 
     bool isSelectedVersion = false;
     QString version;
-
-
     MiniVersionControl *vcs;
 
     // MiniGit mn;

@@ -267,33 +267,8 @@ void MainWindow::on_deleteButton_pressed()
 
 
 
-void MainWindow::on_pushButton_clicked()
-{
-
-}
-
-
-void MainWindow::on_commitButton_pressed()
-{
-
-}
 
 
 
-void MainWindow::on_versionsList_itemClicked(QListWidgetItem *item)
-{
 
-}
-
-
-void MainWindow::on_versionsList_itemSelectionChanged()
-{
-
-}
-
-
-void MainWindow::on_versionsList_itemPressed(QListWidgetItem *item)
-{
-
-}
 
