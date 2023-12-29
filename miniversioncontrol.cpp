@@ -16,13 +16,24 @@
 namespace fs = std::filesystem;
 using namespace std::chrono;
 
+/**
+ * @brief MiniVersionControl class constructor.
+ */
 MiniVersionControl::MiniVersionControl() {
     // Constructor;
 }
 
 namespace fs = std::filesystem;
+
+/**
+ * @brief Logger class for logging messages to a file.
+ */
 class Logger {
 public:
+    /**
+     * @brief Logs a message to a file with a timestamp.
+     * @param message The message to be logged.
+     */
     static void log(const std::string& message) {
         std::ofstream logFile("log.txt", std::ios::app);
         if (logFile.is_open()) {
@@ -34,7 +45,11 @@ public:
     }
 };
 
-
+/**
+ * @brief Computes a checksum for a given string using the FNV-1a hash algorithm.
+ * @param str The string for which the checksum is calculated.
+ * @return uint32_t - The computed checksum.
+ */
 uint32_t computeChecksum(const std::string& str) {
     const uint32_t prime = 16777619;
     uint32_t hash = 2166136261U;
@@ -47,6 +62,9 @@ uint32_t computeChecksum(const std::string& str) {
     return hash;
 }
 
+/**
+ * @brief Initializes the version control system by creating necessary directories.
+ */
 void MiniVersionControl::init() {
     try {
         fs::create_directory(".git");
@@ -58,6 +76,10 @@ void MiniVersionControl::init() {
     }
 }
 
+/**
+ * @brief Adds a file or directory to the staging area.
+ * @param path The path of the file or directory to be added.
+ */
 void MiniVersionControl::add(const std::string& path) {
     try {
         const auto copyOptions = fs::copy_options::overwrite_existing | fs::copy_options::recursive;
@@ -85,6 +107,11 @@ void MiniVersionControl::add(const std::string& path) {
     }
 }
 
+/**
+ * @brief Recursively adds files from a source directory to the staging area.
+ * @param source The source directory.
+ * @param destination The destination directory in the staging area.
+ */
 void MiniVersionControl::addDirectory(const fs::path& source, const fs::path& destination) {
     // Process directories recursively
     fs::create_directory(destination);
@@ -99,6 +126,11 @@ void MiniVersionControl::addDirectory(const fs::path& source, const fs::path& de
     }
 }
 
+/**
+ * @brief Adds a file to the staging area.
+ * @param source The source file.
+ * @param destination The destination file in the staging area.
+ */
 void MiniVersionControl::addFile(const fs::path& source, const fs::path& destination) {
     try {
 
@@ -141,6 +173,10 @@ void MiniVersionControl::addFile(const fs::path& source, const fs::path& destina
     }
 }
 
+/**
+ * @brief Commits the changes in the staging area to a new version.
+ * @param message The commit message.
+ */
 void MiniVersionControl::commit(const std::string& message) {
     try{
         if (fs::is_empty(".git/staging")) {
@@ -181,6 +217,10 @@ void MiniVersionControl::commit(const std::string& message) {
     }
 }
 
+/**
+ * @brief Reverts the files and directories in a specified commit to the previous state.
+ * @param commitFolder The folder containing the commit to be reverted.
+ */
 void MiniVersionControl::revert(const std::string& commitFolder) {
     try {
         for (const auto& entry : fs::directory_iterator(commitFolder)) {
@@ -207,6 +247,11 @@ void MiniVersionControl::revert(const std::string& commitFolder) {
     }
 }
 
+/**
+ * @brief Reverts the contents of a directory to a previous state.
+ * @param sourceDir The source directory to be reverted.
+ * @param destinationDir The destination directory where changes will be reverted.
+ */
 void MiniVersionControl::revertDirectory(const fs::path& sourceDir, const fs::path& destinationDir) {
     try{
         fs::create_directories(destinationDir);
@@ -230,6 +275,11 @@ void MiniVersionControl::revertDirectory(const fs::path& sourceDir, const fs::pa
     }
 }
 
+/**
+ * @brief Reverts the contents of a file to a previous state.
+ * @param source The source file to be reverted.
+ * @param destination The destination file where changes will be reverted.
+ */
 void MiniVersionControl::revertFile(const fs::path& source, const fs::path& destination) {
     try {
         std::lock_guard<std::mutex> lock(MiniVersionControl::mutex_);
@@ -275,6 +325,10 @@ void MiniVersionControl::revertFile(const fs::path& source, const fs::path& dest
 }
 
 
+/**
+ * @brief Lists all files and directories in the current directory.
+ * @return std::vector<std::string> - A vector of file and directory names.
+ */
 std::vector<std::string> MiniVersionControl::listFilesAndFolders() {
     std::vector<std::string> res;
     for (const auto& entry : fs::directory_iterator(".")) {
@@ -288,7 +342,10 @@ std::vector<std::string> MiniVersionControl::listFilesAndFolders() {
 }
 
 
-// Function to list all files and folders in the staging area
+/**
+ * @brief Lists all files and directories in the staging area.
+ * @return std::vector<std::string> - A vector of file and directory names.
+ */
 std::vector<std::string> MiniVersionControl::listStagingArea() {
     std::vector<std::string> result;
 
@@ -310,6 +367,10 @@ std::vector<std::string> MiniVersionControl::listStagingArea() {
 }
 
 
+/**
+ * @brief Lists all available versions (commits) in the repository.
+ * @return std::vector<std::string> - A vector of version (commit) folder names.
+ */
 std::vector<std::string> MiniVersionControl::listVersions() {
     try {
         std::vector<std::string> versionList;
@@ -325,7 +386,11 @@ std::vector<std::string> MiniVersionControl::listVersions() {
     }
 }
 
-// Function to delete a file or folder from the staging area
+
+/**
+ * @brief Deletes a file or directory from the staging area.
+ * @param name The name of the file or directory to be deleted.
+ */
 void MiniVersionControl::deleteFromStaging(const std::string& name) {
     std::lock_guard<std::mutex> lock(mutex_); // Lock the mutex for this scope
 
@@ -355,7 +420,11 @@ void MiniVersionControl::deleteFromStaging(const std::string& name) {
 }
 
 
-// This function uses multithreading to enhace code performance if needed.
+/**
+ * @brief Adds a directory to the staging area with enhanced performance using multithreading.
+ * @param source The source directory path.
+ * @param destination The destination directory path in the staging area.
+ */
 void MiniVersionControl::enhancedAddDirectoy(const fs::path& source, const fs::path& destination) {
     try {
         fs::create_directory(destination);
